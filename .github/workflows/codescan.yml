@@ -79,7 +79,7 @@ jobs:
       # -------------------------
       - name: Run Codescan On Push
         if: github.event_name == 'push'
-        uses: codescan-io/codescan-scanner-action@test-bug-fixes 
+        uses: codescan-io/codescan-scanner-action@2.0
         with:
           scanChangedFilesOnly: true
           organization: ${{ secrets.CODESCAN_ORGANIZATION_KEY }}
@@ -96,7 +96,7 @@ jobs:
       # -------------------------
       - name: Run Codescan On PR
         if: github.event_name == 'pull_request'
-        uses: codescan-io/codescan-scanner-action@test-bug-fixes
+        uses: codescan-io/codescan-scanner-action@2.0
         with:
           scanChangedFilesOnly: true
           organization: ${{ secrets.CODESCAN_ORGANIZATION_KEY }}
