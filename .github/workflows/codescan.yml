@@ -34,7 +34,7 @@ jobs:
                     restore-keys: ${{ runner.os }}-sonar
             -   name: Run Analysis
                 uses: codescan-io/codescan-scanner-action@2.0
-                 with:
+                with:
                     scanChangedFilesOnly: true
                     organization: ${{ secrets.CODESCAN_ORGANIZATION_KEY }}
                     projectKey: ${{ secrets.CODESCAN_PROJECT_KEY }}
