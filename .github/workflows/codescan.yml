@@ -1,5 +1,4 @@
-# read our documentation at https://github.com/codescan-io/codescan-scanner-action
-name: CodeScan
+name: CI
 env:
   SONAR_SCANNER_VERSION: 5.0.1.3006
   ACTIONS_STEP_DEBUG: true
@@ -7,40 +6,114 @@ env:
 
 on:
   push:
-    branches: [ "master" ]
+    branches:
+      - '*'  # any branch
+    paths-ignore:
+      - src/test/java/**
+      - target/**
   pull_request:
-    # The branches below must be a subset of the branches above
-    branches: [ "master" ]
-
-permissions:
-  contents: read
-
+    branches:
+      - '*'  # any PR target
+    paths-ignore:
+      - src/test/java/**
+      - target/**
 jobs:
-    CodeScan:
-        permissions:
-          contents: read # for actions/checkout to fetch code
-        runs-on: ubuntu-latest
-        steps:
-            -   name: Checkout repository
-                uses: actions/checkout@v4
-                with:
-                    fetch-depth: 0  # full history needed for PR diffs
-            -   name: Cache files
-                uses: actions/cache@v3
-                with:
-                    path: |
-                        ~/.sonar
-                    key: ${{ runner.os }}-sonar
-                    restore-keys: ${{ runner.os }}-sonar
-            -   name: Run Analysis
-                uses: codescan-io/codescan-scanner-action@2.0
-                with:
-                    scanChangedFilesOnly: true
-                    organization: ${{ secrets.CODESCAN_ORGANIZATION_KEY }}
-                    projectKey: ${{ secrets.CODESCAN_PROJECT_KEY }}
-                    codeScanUrl: https://preview.codescan.io
-                    login: ${{ secrets.CODESCAN_AUTH_TOKEN }}
-                    generateSarifFile: false
-                    args: |
-                        sonar.branch.name=${{ github.ref_name }}
-                        sonar.exclusions=target/**,src/test/java/**
+  build:
+    runs-on: macos-latest
+    steps:
+      # --------------------------
+      # Checkout repository
+      # -------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history needed for PR diffs
+      # -------------------------
+      # Cache Sonar files
+      # -------------------------
+      - name: Cache files
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.sonar
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      # -------------------------
+      # Ultra-clear Debug / Log info with separators
+      # -------------------------
+      - name: Print scan info
+        run: |
+          GREEN="\033[0;32m"
+          YELLOW="\033[1;33m"
+          RED="\033[0;31m"
+          BLUE="\033[0;34m"
+          NC="\033[0m" # No Color
+          SEP="==============================================="
+          echo -e "${BLUE}${SEP}${NC}"
+          echo -e "${GREEN}=== Codescan Debug Info ===${NC}"
+          echo -e "Commit SHA: $GITHUB_SHA"
+          echo -e "SONAR_SOURCES: $SONAR_SOURCES"
+          echo -e "${BLUE}${SEP}${NC}"
+          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            echo -e "${YELLOW}⚡ Push Event${NC}"
+            echo -e "Branch: $GITHUB_REF_NAME"
+            # Check if this push is part of an open PR
+            if [ ! -z "${{ github.event.pull_request.number }}" ]; then
+              echo -e "${RED} Warning: This push is part of an open PR; PR workflow may also run for the same commit.${NC}"
+              echo -e "PR Number: ${{ github.event.pull_request.number }}"
+              echo -e "PR Head: ${{ github.head_ref }}"
+              echo -e "PR Base: ${{ github.base_ref }}"
+              echo -e "${RED}${SEP}${NC}"
+            fi
+          elif [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            echo -e "${GREEN} Pull Request Event${NC}"
+            echo -e "PR Number: ${{ github.event.pull_request.number }}"
+            echo -e "PR Head: ${{ github.head_ref }}"
+            echo -e "PR Base: ${{ github.base_ref }}"
+            echo -e "Branch (from head_ref): $GITHUB_REF_NAME"
+            echo -e "${GREEN}${SEP}${NC}"
+          else
+            echo -e "${RED}Unknown event: $GITHUB_EVENT_NAME${NC}"
+            echo -e "${RED}${SEP}${NC}"
+          fi
+      # -------------------------
+      # Push Event → Branch Analysis
+      # -------------------------
+      - name: Run Codescan On Push
+        if: github.event_name == 'push'
+        uses: codescan-io/codescan-scanner-action@2.0
+        with:
+          scanChangedFilesOnly: true
+          organization: ${{ secrets.CODESCAN_ORGANIZATION_KEY }}
+          projectKey: ${{ secrets.CODESCAN_PROJECT_KEY }}
+          codeScanUrl: https://preview.codescan.io
+          login: ${{ secrets.CODESCAN_AUTH_TOKEN }}
+          generateSarifFile: true
+          args: |
+            sonar.branch.name=${{ github.ref_name }}
+            sonar.exclusions=target/**,src/test/java/**
+      # -------------------------
+      # Pull Request Event → Comparison Analysis
+      # -------------------------
+      - name: Run Codescan On PR
+        if: github.event_name == 'pull_request'
+        uses: codescan-io/codescan-scanner-action@2.0
+        with:
+          scanChangedFilesOnly: true
+          organization: ${{ secrets.CODESCAN_ORGANIZATION_KEY }}
+          projectKey: ${{ secrets.CODESCAN_PROJECT_KEY }}
+          codeScanUrl: https://preview.codescan.io
+          login: ${{ secrets.CODESCAN_AUTH_TOKEN }}
+          generateSarifFile: true
+          args: |
+            sonar.pullrequest.key=${{ github.event.pull_request.number }}
+            sonar.pullrequest.branch=${{ github.head_ref }}
+            sonar.pullrequest.base=${{ github.base_ref }}
+            sonar.exclusions=target/**,src/test/java/**
+      # -------------------------
+      # Upload SARIF file for GitHub code scanning
+      # -------------------------
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: codescan.sarif
