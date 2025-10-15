@@ -1,6 +1,8 @@
 name: CI
 env:
   SONAR_SCANNER_VERSION: 5.0.1.3006
+  ACTIONS_STEP_DEBUG: true
+  ACTIONS_RUNNER_DEBUG: true
 
 on:
   push:
@@ -84,12 +86,11 @@ jobs:
           scanChangedFilesOnly: true
           organization: ${{ secrets.CODESCAN_ORGANIZATION_KEY }}
           projectKey: ${{ secrets.CODESCAN_PROJECT_KEY }}
-          codeScanUrl: https://test.codescan.io
+          codeScanUrl: https://preview.codescan.io
           login: ${{ secrets.CODESCAN_AUTH_TOKEN }}
           generateSarifFile: true
           args: |
             sonar.branch.name=${{ github.ref_name }}
-            sonar.sources=${{ env.SONAR_SOURCES }}
             sonar.exclusions=target/**,src/test/java/**
       # -------------------------
       # Pull Request Event → Comparison Analysis
@@ -101,14 +102,13 @@ jobs:
           scanChangedFilesOnly: true
           organization: ${{ secrets.CODESCAN_ORGANIZATION_KEY }}
           projectKey: ${{ secrets.CODESCAN_PROJECT_KEY }}
-          codeScanUrl: https://test.codescan.io
+          codeScanUrl: https://preview.codescan.io
           login: ${{ secrets.CODESCAN_AUTH_TOKEN }}
           generateSarifFile: true
           args: |
             sonar.pullrequest.key=${{ github.event.pull_request.number }}
             sonar.pullrequest.branch=${{ github.head_ref }}
             sonar.pullrequest.base=${{ github.base_ref }}
-            sonar.sources=${{ env.SONAR_SOURCES }}
             sonar.exclusions=target/**,src/test/java/**
       # -------------------------
       # Upload SARIF file for GitHub code scanning
