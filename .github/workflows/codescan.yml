@@ -52,6 +52,7 @@ jobs:
           echo -e "${BLUE}${SEP}${NC}"
           echo -e "${GREEN}=== Codescan Debug Info ===${NC}"
           echo -e "Commit SHA: $GITHUB_SHA"
+          echo -e "SONAR_SOURCES: $SONAR_SOURCES"
           echo -e "${BLUE}${SEP}${NC}"
           if [ "$GITHUB_EVENT_NAME" = "push" ]; then
             echo -e "${YELLOW}⚡ Push Event${NC}"
@@ -91,6 +92,8 @@ jobs:
           args: |
             sonar.branch.name=${{ github.ref_name }}
             sonar.exclusions=target/**,src/test/java/**
+            sonar.projectKey=${{ inputs.projectKey }}
+            sonar.organization=${{ inputs.organization }}
       # -------------------------
       # Pull Request Event → Comparison Analysis
       # -------------------------
