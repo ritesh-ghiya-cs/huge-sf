@@ -84,7 +84,7 @@ jobs:
           scanChangedFilesOnly: true
           organization: ${{ secrets.CODESCAN_ORGANIZATION_KEY }}
           projectKey: ${{ secrets.CODESCAN_PROJECT_KEY }}
-          codeScanUrl: https://preview.codescan.io/
+          codeScanUrl: https://test.codescan.io
           login: ${{ secrets.CODESCAN_AUTH_TOKEN }}
           generateSarifFile: true
           args: |
@@ -101,7 +101,7 @@ jobs:
           scanChangedFilesOnly: true
           organization: ${{ secrets.CODESCAN_ORGANIZATION_KEY }}
           projectKey: ${{ secrets.CODESCAN_PROJECT_KEY }}
-          codeScanUrl: https://perview.codescan.io/
+          codeScanUrl: https://test.codescan.io
           login: ${{ secrets.CODESCAN_AUTH_TOKEN }}
           generateSarifFile: true
           args: |
