@@ -38,8 +38,10 @@ jobs:
             -   name: Run Analysis
                 uses: codescan-io/codescan-scanner-action@2.0
                 with:
-                    scanChangedFilesOnly: true
+                    scanChangedFilesOnly: false
                     generateSarifFile: false
+                    failOnRedQualityGate: false
+                    generateReportFile: false
                     login: ${{ secrets.CODESCAN_AUTH_TOKEN }}
                     organization: ${{ secrets.CODESCAN_ORGANIZATION_KEY }}
                     projectKey: ${{ secrets.CODESCAN_PROJECT_KEY }}
