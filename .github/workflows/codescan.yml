@@ -20,6 +20,7 @@ on:
 jobs:
   build:
     runs-on: macos-latest
+    environment: preview
     steps:
       # --------------------------
       # Checkout repository
@@ -92,8 +93,6 @@ jobs:
           args: |
             sonar.branch.name=${{ github.ref_name }}
             sonar.exclusions=target/**,src/test/java/**
-            sonar.projectKey=${{ inputs.projectKey }}
-            sonar.organization=${{ inputs.organization }}
       # -------------------------
       # Pull Request Event → Comparison Analysis
       # -------------------------
