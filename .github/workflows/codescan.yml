@@ -1,9 +1,13 @@
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# This workflow requires that you have an existing account with codescan.io
+# For more information about configuring your workflow,
 # read our documentation at https://github.com/codescan-io/codescan-scanner-action
 name: CodeScan
-env:
-  SONAR_SCANNER_VERSION: 5.0.1.3006
-  ACTIONS_STEP_DEBUG: true
-  ACTIONS_RUNNER_DEBUG: true
 
 on:
   push:
@@ -20,12 +24,9 @@ jobs:
         permissions:
           contents: read # for actions/checkout to fetch code
         runs-on: ubuntu-latest
-        environment: preview
         steps:
             -   name: Checkout repository
                 uses: actions/checkout@v4
-                with:
-                    fetch-depth: 0  # full history needed for PR diffs
             -   name: Cache files
                 uses: actions/cache@v3
                 with:
@@ -36,13 +37,12 @@ jobs:
             -   name: Run Analysis
                 uses: codescan-io/codescan-scanner-action@2.0
                 with:
-                    scanChangedFilesOnly: true
-                    organization: ${{ secrets.CODESCAN_ORGANIZATION_KEY }}
-                    projectKey: ${{ secrets.CODESCAN_PROJECT_KEY }}
+                    login: squ_bc7401d09949f3d6cbeb7201d66f195d4b1edd3b
+                    organization: test-ritesh-org
+                    projectKey: webhook-project-k
                     codeScanUrl: https://preview.codescan.io
-                    login: ${{ secrets.CODESCAN_AUTH_TOKEN }}
                     generateSarifFile: false
                     args: |
-                        sonar.branch.name=${{ github.ref_name }}
-                        sonar.exclusions=target/**,src/test/java/**
-                        codescan.reports.enabled=false
+                      sonar.host.url=https://preview.codescan.io/
+                      sonar.branch.name=main
+                      sonar.sources=.
