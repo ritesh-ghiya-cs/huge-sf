@@ -37,12 +37,14 @@ jobs:
             -   name: Run Analysis
                 uses: codescan-io/codescan-scanner-action@2.0
                 with:
+                    scanChangedFilesOnly: true
+                    generateSarifFile: false
                     login: squ_bc7401d09949f3d6cbeb7201d66f195d4b1edd3b
                     organization: test-ritesh-org
                     projectKey: webhook-project-k
                     codeScanUrl: https://preview.codescan.io
-                    generateSarifFile: false
                     args: |
                       sonar.host.url=https://preview.codescan.io/
                       sonar.branch.name=main
                       sonar.sources=.
+                      sonar.exclusions=target/**,src/test/java/**
