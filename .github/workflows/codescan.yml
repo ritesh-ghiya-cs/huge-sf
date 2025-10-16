@@ -47,4 +47,4 @@ jobs:
                       sonar.host.url=https://preview.codescan.io/
                       sonar.branch.name=main
                       sonar.sources=.
-                      sonar.exclusions=target/**,src/test/java/**
+                      sonar.exclusions=target/**,**/*.java
