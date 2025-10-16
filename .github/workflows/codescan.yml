@@ -45,3 +45,4 @@ jobs:
                     args: |
                         sonar.branch.name=${{ github.ref_name }}
                         sonar.exclusions=target/**,src/test/java/**
+                        codescan.reports.enabled=false
