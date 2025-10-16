@@ -36,7 +36,7 @@ jobs:
                     key: ${{ runner.os }}-sonar
                     restore-keys: ${{ runner.os }}-sonar
             -   name: Run Analysis
-                uses: codescan-io/codescan-scanner-action@2.0
+                uses: codescan-io/codescan-scanner-action@test-bug-fixes
                 with:
                     scanChangedFilesOnly: false
                     generateSarifFile: false
