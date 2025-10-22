@@ -1,4 +1,3 @@
-
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
 # separate terms of service, privacy policy, and support
@@ -8,6 +7,11 @@
 # For more information about configuring your workflow,
 # read our documentation at https://github.com/codescan-io/codescan-scanner-action
 name: CodeScan
+
+env:
+  SONAR_SCANNER_VERSION: 5.0.1.3006
+  ACTIONS_STEP_DEBUG: true
+  ACTIONS_RUNNER_DEBUG: true
 
 on:
   push:
@@ -25,11 +29,12 @@ jobs:
         permissions:
           contents: read # for actions/checkout to fetch code
         runs-on: ubuntu-latest
+        timeout-minutes: 30
         steps:
             -   name: Checkout repository
                 uses: actions/checkout@v4
             -   name: Cache files
-                uses: actions/cache@v3
+                uses: actions/cache@v4
                 with:
                     path: |
                         ~/.sonar
@@ -45,9 +50,15 @@ jobs:
                     login: ${{ secrets.CODESCAN_AUTH_TOKEN }}
                     organization: ${{ secrets.CODESCAN_ORGANIZATION_KEY }}
                     projectKey: ${{ secrets.CODESCAN_PROJECT_KEY }}
-                    codeScanUrl: https://preview.codescan.io
+                    codeScanUrl: https://preview.codescan.io/
                     args: |
                       sonar.host.url=https://preview.codescan.io/
                       sonar.branch.name=main
                       sonar.sources=.
                       sonar.exclusions=target/**,**/*.java
+                      sonar.analysisCache.enabled=false
+                      codescan.suppressUnitTestViolations=false
+                      codescan.comparison.branches=false
+                      sonar.verbose=true
+                      sonar.scm.provider=git
+                      sonar.scm.disabled=false
