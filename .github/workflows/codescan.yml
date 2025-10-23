@@ -41,7 +41,7 @@ jobs:
                     key: ${{ runner.os }}-sonar
                     restore-keys: ${{ runner.os }}-sonar
             -   name: Run Analysis
-                uses: codescan-io/codescan-scanner-action@test-bug-fixes
+                uses: codescan-io/codescan-scanner-action@2.0
                 with:
                     scanChangedFilesOnly: false
                     generateSarifFile: false
@@ -53,7 +53,7 @@ jobs:
                     codeScanUrl: https://preview.codescan.io/
                     args: |
                       sonar.host.url=https://preview.codescan.io/
-                      sonar.branch.name=master
+                      sonar.branch.name=main
                       sonar.sources=.
                       sonar.exclusions=target/**,**/*.java
                       sonar.analysisCache.enabled=false
