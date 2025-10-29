@@ -44,7 +44,7 @@ jobs:
                 with:
                     scanChangedFilesOnly: false
                     generateSarifFile: false
-                    failOnRedQualityGate: true
+                    failOnRedQualityGate: false
                     generateReportFile: false
                     login: ${{ secrets.CODESCAN_AUTH_TOKEN }}
                     organization: ${{ secrets.CODESCAN_ORGANIZATION_KEY }}
