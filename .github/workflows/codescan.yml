@@ -53,7 +53,7 @@ jobs:
                     args: |
                       sonar.host.url=https://preview.codescan.io/
                       sonar.branch.name=main
-                      sonar.sources=.
+                      sonar.sources=ASurzhenko-Salesforce/src
                       sonar.exclusions=target/**,**/*.java
                       sonar.analysisCache.enabled=false
                       codescan.suppressUnitTestViolations=false
