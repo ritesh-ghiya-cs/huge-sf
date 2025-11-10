@@ -49,9 +49,9 @@ jobs:
                     login: ${{ secrets.CODESCAN_AUTH_TOKEN }}
                     organization: ${{ secrets.CODESCAN_ORGANIZATION_KEY }}
                     projectKey: ${{ secrets.CODESCAN_PROJECT_KEY }}
-                    codeScanUrl: https://preview.codescan.io/
+                    codeScanUrl: https://test.codescan.io/
                     args: |
-                      sonar.host.url=https://preview.codescan.io/
+                      sonar.host.url=https://test.codescan.io/
                       sonar.branch.name=main
                       sonar.sources=ASurzhenko-Salesforce/src
                       sonar.exclusions=target/**,**/*.java
