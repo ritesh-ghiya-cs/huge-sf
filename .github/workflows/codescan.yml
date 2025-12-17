@@ -42,7 +42,7 @@ jobs:
             -   name: Run Analysis
                 uses: codescan-io/codescan-scanner-action@2.0
                 with:
-                    scanChangedFilesOnly: false
+                    scanChangedFilesOnly: true
                     generateSarifFile: false
                     failOnRedQualityGate: false
                     generateReportFile: false
