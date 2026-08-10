@@ -58,4 +58,7 @@ public with sharing class AccountsCheck
         public boolean isSelected{get;set;}
         public Account myAccount{get;set;}
     }
+
+// changes classes
+// new update
 }
